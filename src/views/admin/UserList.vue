@@ -81,10 +81,12 @@ export default {
       this.isUserFormModalVisible = false;
     },
     editUser(index, row) {
-      alert(`Editando o usuário: ${row.name}`);
+      console.log(index, row)
+      this.typeForm = 'Editar'
+      this.isUserFormModalVisible = true;
     },
     deleteUser(index, row) {
-      alert('deletando usuário: ' + row.name + "id: " + index)
+      alert('deletando usuário: ' + row.name)
     },
     showAlert(message, type) {
       this.customAlert.alertMessage = message;
