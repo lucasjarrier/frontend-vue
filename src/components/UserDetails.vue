@@ -42,7 +42,7 @@ export default {
 .user-icon {
     font-size: 30px;
     margin-right: 20px;
-    color: #fff;
+    color: var(--light-color);
 }
 
 .user-photo {
@@ -59,11 +59,11 @@ export default {
 
 .user-name {
     font-weight: bold;
-    color: #fff;
+    color: var(--light-color);
 }
 
 .user-role {
-    color: #fff;
+    color: var(--light-color);
 }
 
 </style>

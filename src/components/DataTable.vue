@@ -3,19 +3,18 @@
         <el-card shadow="hover">
             
             <!-- Filters -->
-            <el-row>
-                <h2 class="custom-title"> Lista de Clientes</h2>
+            <el-row style="margin-bottom: 1%;">
+                <h2 class="custom-title"> <span class="underlined">Lista de Clientes</span></h2>
             </el-row>
             <el-row v-if="filters && filters.length">
-                <el-col :span="20">
-                    <el-input :placeholder="placeholderText" v-model="filterValue">
-                    </el-input>
+                <el-col :span="17">
+                    <el-input :placeholder="placeholderText" v-model="filterValue"></el-input>
                 </el-col>
-                <el-col :span="2">
+                <el-col :span="1">
                     <el-button v-on:click="applyFilter" class="search-button" type="primary" icon="el-icon-search"></el-button>
                 </el-col>
-                <el-col :span="2">
-                    <el-button v-on:click="createUser" class="new-user-button" type="primary" icon="el-icon-plus">Cadastrar cliente</el-button>
+                <el-col :span="6">
+                    <el-button v-on:click="createData" class="new-user-button" type="primary" icon="el-icon-plus">Cadastrar cliente</el-button>
                 </el-col>
             </el-row>
             
@@ -24,13 +23,12 @@
                 <h4 class="custom-title"> Clientes cadastrados </h4>
             </el-row>
             <el-row>
-                <el-table :data="tableData" stripe style="width: 100%">
+                <el-table :data="data" stripe style="width: 100%">
                     <el-table-column v-for="column in columns" :key="column.label" :prop="column.field" :label="column.label" sortable></el-table-column>
-                    <el-table-column align="center" label="Ações">
+                    <el-table-column align="right" label="Ações">
                         <template slot-scope="scope">
                             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Editar</el-button>
-                            <el-button size="mini" type="primary"
-                                @click="handleDelete(scope.$index, scope.row)">Excluir</el-button>
+                            <el-button size="mini" type="primary" @click="handleDelete(scope.$index, scope.row)">Excluir</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -40,10 +38,10 @@
             </el-row>
             <el-row>
                 <el-col :span="4" align="left">
-                    <span class="custom-ammout"> Registros totais: {{ tableData.length }} </span>
+                    <span class="custom-ammout"> Registros totais: {{ pageable.totalElements }} </span>
                 </el-col>
                 <el-col :span="20" align="right">
-                    <el-pagination small layout="prev, pager, next" :page-size="10" :total="100">
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageable.pageNumber + 1" :page-size="pageable.pageSize" layout="prev, pager, next" :total="pageable.totalElements">
                     </el-pagination>
                 </el-col>
             </el-row>
@@ -52,13 +50,17 @@
 </template>
 
 <script>
-
 export default {
     name: 'DataTable',
     props: {
         data: {
             type: Array,
             required: true
+        },
+        pageable: {
+            type: Object,
+            required: false,
+            default: () => ({})
         },
         columns: {
             type: Array,
@@ -67,20 +69,52 @@ export default {
         filters: {
             type: Array,
             default: () => []
+        },
+        applyFilterFunction: {
+            type: Function,
+            required: true
+        },
+        createDataFunction: {
+            type: Function,
+            required: true
+        },
+        handleEditFunction: {
+            type: Function,
+            required: true
+        },
+        handleDeleteFunction: {
+            type: Function,
+            required: true
         }
     },
     data() {
         return {
-            tableData: this.data,
             filterValue: ''
         }
     },
     methods: {
         applyFilter() {
-            alert("Não implementado")
+            let searchFilter = {};
+
+            for (const filter of this.filters) {
+                searchFilter[filter.field] = this.filterValue;
+            }
+            this.applyFilterFunction(searchFilter);
         },
-        createUser() {
-            console.log(this.filters)
+        createData() {
+            this.createDataFunction();
+        },
+        handleEdit(index, row) {
+            this.handleEditFunction(index, row);
+        },
+        handleDelete(index, row) {
+            this.handleDeleteFunction(index, row);
+        },
+        handleSizeChange(newSize) {
+            this.applyFilterFunction({ size: newSize, page: 0 });
+        },
+        handleCurrentChange(newPage) {
+            this.applyFilterFunction({ page: newPage - 1 });
         }
     },
     computed: {
@@ -96,7 +130,6 @@ export default {
         }
     }
 }
-
 </script>
 
 
@@ -105,7 +138,7 @@ export default {
     width: 100%;
 }
 
-.search-button, 
+.search-button,
 .custom-title {
     float: left;
 }
@@ -115,8 +148,14 @@ export default {
 }
 
 .custom-ammout {
-    color: gray;
+    color: var(--secondary-color);
     font-size: small;
 }
 
+.underlined {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 8px;
+}
 </style>

@@ -16,10 +16,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: var(--light-blue-color);
   width: 100%;
   height: 100%;
-  background-color: #ffff;
+  background-color: var(--light-color);
 }
 
 body,

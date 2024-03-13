@@ -4,23 +4,23 @@
             <h2 class="register-title">Cadastro</h2>
             <el-form @submit.prevent="register">
                 <el-form-item class="label-style" label="Nome">
-                    <el-input v-model="registerForm.name" placeholder="Digite seu nome" prefix-icon="el-icon-user"
+                    <el-input :disabled="formDisabled" v-model="registerForm.name" placeholder="Digite seu nome" prefix-icon="el-icon-user"
                         required class="custom-input"></el-input>
                 </el-form-item>
                 <el-form-item class="label-style" label="CNPJ">
-                    <el-input v-model="registerForm.cnpj" placeholder="Digite seu CNPJ" prefix-icon="el-icon-s-shop"
+                    <el-input :disabled="formDisabled" v-model="registerForm.cnpj" placeholder="Digite seu CNPJ" prefix-icon="el-icon-s-shop"
                         required class="custom-input"></el-input>
                 </el-form-item>
                 <el-form-item class="label-style" label="Email">
-                    <el-input type="email" v-model="registerForm.username" placeholder="Digite seu email"
+                    <el-input :disabled="formDisabled" type="email" v-model="registerForm.username" placeholder="Digite seu email"
                         prefix-icon="el-icon-email" required class="custom-input"></el-input>
                 </el-form-item>
                 <el-form-item class="label-style" label="Senha">
-                    <el-input type="password" v-model="registerForm.password" placeholder="Digite sua senha"
+                    <el-input :disabled="formDisabled" type="password" v-model="registerForm.password" placeholder="Digite sua senha"
                         prefix-icon="el-icon-lock" required class="custom-input" show-password></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button v-on:click="register" type="primary" class="btn-login">Cadastrar</el-button>
+                    <el-button :disabled="formDisabled" v-on:click="register" type="primary" class="btn-login">Cadastrar</el-button>
                 </el-form-item>
             </el-form>
             <div class="signup-link">
@@ -54,22 +54,33 @@ export default {
                 alertVisible: false,
                 alertType: '',
                 alertMessage: ''
-            }
+            },
+            formDisabled: false
         };
     },
     methods: {
         async register() {
+            this.formDisabled = true
+            let created = false
             try {
                 const response = await createUser(this.registerForm);
-
-                if (response.body.Status < 300) {
+                if (response.body.status === 201) {
+                    created = true
                     this.showAlert('Usuário cadastrado com sucesso!', 'success');
+                    setTimeout(() => {
+                        this.switchForm();
+                    }, 2000);
                 }
-
             } catch (err) {
                 this.showAlert('Erro ao criar usuário', 'error')
             }
+
+            if (!created) {
+                this.formDisabled = false
+                this.showAlert('Preencha todos os campos!', 'info')
+            }
         },
+
         switchForm() {
             this.$emit('switch-form', 'LoginForm');
         },
@@ -80,7 +91,7 @@ export default {
         },
         hideAlert() {
             this.customAlert.alertVisible = false;
-        }
+        },
     }
 };
 </script>
@@ -112,9 +123,5 @@ export default {
 .signup-link {
     text-align: center;
     margin-top: 15px;
-}
-
-.required-inputs {
-    color: brown;
 }
 </style>

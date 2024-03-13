@@ -35,7 +35,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #073bb5;
+  background-color: var(--primary-color);
 }
 
 .fade-enter-active, .fade-leave-active {

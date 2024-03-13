@@ -1,6 +1,6 @@
 <template>
   <el-header id="custom-header">
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#072ab5" text-color="#e1e8f2" active-text-color="#ffff">
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#073bb5" text-color="#e1e8f2" active-text-color="#ffff">
       <el-menu-item v-for="route in routes" :key="route.path" :index="route.path">{{ route.name }}</el-menu-item>
       <el-menu-item index="/logout" class="logout-item">
         <i class="el-icon-d-arrow-right" @click="logout"></i>
@@ -62,13 +62,13 @@ export default {
 
 .el-icon-d-arrow-right {
   font-size: 25px;
-  color: #ffff;
+  color: var(--light-color);
   font-weight: bold;
 }
 
 .el-menu-item.is-active {
   font-weight: bold !important;
-  background-color: #073bb5 !important;
+  background-color: var(--primary-color);
 }
 
 #custom-header {
